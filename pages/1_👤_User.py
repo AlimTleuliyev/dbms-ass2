@@ -40,12 +40,12 @@ with st.form('user_form'):
     st.write('Create a New User')
     # User input fields
     user_data = {
-        'email': st.text_input('Email'),
-        'given_name': st.text_input('Given Name'),
-        'surname': st.text_input('Surname'),
-        'city': st.text_input('City'),
-        'phone_number': st.text_input('Phone Number'),
-        'profile_description': st.text_area('Profile Description'),
+        'email': st.text_input('Email', value='alim.tleuliyev@gmail.com'),
+        'given_name': st.text_input('Given Name', value='Alim'),
+        'surname': st.text_input('Surname', value='Tleuliyev'),
+        'city': st.text_input('City', value='Taldykorgan'),
+        'phone_number': st.text_input('Phone Number', '+77777777777'),
+        'profile_description': st.text_area('Profile Description', 'I am a software engineer. I need love care.'),
         'password': st.text_input('Password', type='password')
     }
 
