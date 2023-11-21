@@ -1,6 +1,4 @@
-from sqlalchemy import create_engine, MetaData, text
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, text
 
 DATABASE_URI = 'postgresql+psycopg2://alimtleuliyev:qwerty@localhost:5432/alimtleuliyev'
 

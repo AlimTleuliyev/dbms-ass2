@@ -1,91 +1,63 @@
 import streamlit as st
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import User, Base  # Import your SQLAlchemy models here
+from models import User, Base
+from populate import populate
 
-# Database setup
-engine = create_engine('sqlite:///your_database.db')
-Session = sessionmaker(bind=engine)
-session = Session()
+# Setting up the page configuration for a more appealing look
+st.set_page_config(
+    page_title="Caregivers Online Platform",
+    page_icon=":family:",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# Streamlit UI
-st.title('User Management')
+# Database Setup
+engine = create_engine('sqlite:///dbms.db')
+Base.metadata.create_all(engine)
 
-# Add User Function
-def add_user(email, given_name, surname, city, phone_number, profile_description, password):
-    new_user = User(
-        email=email, 
-        given_name=given_name, 
-        surname=surname, 
-        city=city, 
-        phone_number=phone_number, 
-        profile_description=profile_description, 
-        password=password
-    )
-    session.add(new_user)
-    session.commit()
+# Main Header and Introduction
+st.title('Welcome to Caregivers Online Platform')
+st.markdown("""
+This platform is designed to connect families with trustworthy caregivers. 
+Whether you're looking for a babysitter, elderly care, or any other caregiving service, 
+we've got you covered. Easily find, contact, and schedule appointments with caregivers 
+tailored to your needs.
+""")
 
-# View Users Function
-def view_users():
-    users = session.query(User).all()
-    for user in users:
-        st.write(f"ID: {user.user_id}, Email: {user.email}, Name: {user.given_name} {user.surname}")
+# Sidebar for Additional Navigation
+with st.sidebar:
+    st.header("Navigate")
+    st.info("Use the sidebar to navigate through the platform, manage your profile, or search for caregivers and jobs.")
 
-# Update User Function
-def update_user(user_id, email, given_name, surname, city, phone_number, profile_description, password):
-    user = session.query(User).filter(User.user_id == user_id).first()
-    user.email = email
-    user.given_name = given_name
-    user.surname = surname
-    user.city = city
-    user.phone_number = phone_number
-    user.profile_description = profile_description
-    user.password = password
-    session.commit()
+    # Additional navigation or account management options
+    st.button("Your Profile")
+    st.button("Search Caregivers")
+    st.button("Post a Job")
+    st.button("View Appointments")
 
-# Delete User Function
-def delete_user(user_id):
-    user = session.query(User).filter(User.user_id == user_id).first()
-    session.delete(user)
-    session.commit()
+# Populate Database Button
+st.header("Get Started")
+st.write("New to the platform? Populate your database to see sample data.")
+if st.button('Populate Database'):
+    try:
+        populate()
+        st.success("Database populated successfully!")
+    except Exception as e:
+        st.error(str(e))
 
-# UI for Adding a New User
-with st.form("Add User"):
-    st.subheader("Add New User")
-    new_email = st.text_input("Email")
-    new_given_name = st.text_input("Given Name")
-    new_surname = st.text_input("Surname")
-    new_city = st.text_input("City")
-    new_phone_number = st.text_input("Phone Number")
-    new_profile_description = st.text_area("Profile Description")
-    new_password = st.text_input("Password", type="password")
-    
-    if st.form_submit_button("Add User"):
-        add_user(new_email, new_given_name, new_surname, new_city, new_phone_number, new_profile_description, new_password)
-        st.success("User added successfully!")
+# Main Features Section
+st.header("What We Offer")
+col1, col2, col3 = st.columns(3)
 
-# UI for Updating an Existing User
-with st.form("Update User"):
-    st.subheader("Update Existing User")
-    user_id = st.number_input("User ID", step=1, min_value=0)
-    updated_email = st.text_input("Updated Email")
-    updated_given_name = st.text_input("Updated Given Name")
-    updated_surname = st.text_input("Updated Surname")
-    updated_city = st.text_input("Updated City")
-    updated_phone_number = st.text_input("Updated Phone Number")
-    updated_profile_description = st.text_area("Updated Profile Description")
-    updated_password = st.text_input("Updated Password", type="password")
-    
-    if st.form_submit_button("Update User"):
-        update_user(user_id, updated_email, updated_given_name, updated_surname, updated_city, updated_phone_number, updated_profile_description, updated_password)
-        st.success("User updated successfully!")
+with col1:
+    st.subheader("Find Caregivers")
+    st.write("Browse through profiles of qualified caregivers and find the perfect match for your family's needs.")
 
-# UI for Deleting a User
-delete_user_id = st.number_input("Delete User ID", step=1, min_value=0)
-if st.button('Delete User'):
-    delete_user(delete_user_id)
-    st.success(f"User with ID {delete_user_id} deleted successfully!")
+with col2:
+    st.subheader("Post Jobs")
+    st.write("Looking for specific caregiving services? Post a job and let caregivers apply to you.")
 
-# Button to View All Users
-if st.button('Show All Users'):
-    view_users()
+with col3:
+    st.subheader("Schedule Appointments")
+    st.write("Easily schedule and manage appointments with your preferred caregivers.")

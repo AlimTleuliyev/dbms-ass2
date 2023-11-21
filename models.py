@@ -83,7 +83,3 @@ class Appointment(Base):
     status = Column(String(20), CheckConstraint("status IN ('Pending', 'Confirmed', 'Declined')"), nullable=False)
     caregiver = relationship("Caregiver")
     member = relationship("Member")
-
-# Create the SQLite database
-engine = create_engine('postgresql+psycopg2://alimtleuliyev:qwerty@localhost:5432/alimtleuliyev')
-Base.metadata.create_all(engine)
